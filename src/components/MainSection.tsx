@@ -1,0 +1,181 @@
+import { useEffect, useRef, useState } from "react";
+import mStyle from "./scss/MainSection.module.scss";
+import rawSection from "../data/wavveOnly.json";
+
+import { useNavigate } from "react-router-dom";
+import { usePickStore } from "../stores/usePickStore";
+import Modal from "./Modal";
+import type { Wavves } from "../data/wavves";
+
+interface MainExtra {
+  main_img: string;
+  main_video: string;
+  main_desc: string;
+  main_Title: string;
+  media_type: string;
+  poster_path: string;
+}
+
+interface MainItem extends Partial<Wavves>, MainExtra {
+  id: number;
+}
+
+const mSection = rawSection as Wavves[];
+
+const MainSlider = () => {
+  const { onTogglePick, pickList, pickAction } = usePickStore();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [showVideo, setShowVideo] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalSize, setModalSize] = useState<"xsmall" | "small" | "default" | "large">("default");
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const navigate = useNavigate();
+
+  const base = mSection.find((f) => f.series_title === "ONE : 하이스쿨 히어로즈");
+
+  const extraMainData: MainExtra = {
+    main_img: "/images/visual/visual-mSection-default.webp",
+    main_video: "/videos/video-mSection.mp4",
+    main_desc: "학교 폭력 서열을 뒤엎는 하이스쿨 액션 드라마",
+    main_Title: "images/badge/badge-mSection-title.png",
+    media_type: "tv",
+    poster_path: "/7jIZaNtpZlEwNLWGaj0dXl4sDSq.jpg",
+  };
+
+  const pickId: number = base?.tmdb_id ?? 233219;
+
+  const main: MainItem = {
+    ...(base ?? {}),
+    ...extraMainData,
+    id: pickId,
+  };
+
+  const isPicked = pickList.some((p) => p.id === main.id);
+
+  //찜리스트 추가예정
+  const handleHeart = async () => {
+    await onTogglePick(main);
+    setModalSize("small");
+    setIsModalOpen(true);
+  };
+
+  const handleNavigate = () => {
+    navigate(`/contentsdetail/wavve/233219`);
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowVideo(true);
+      videoRef.current?.play();
+    }, 2300);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <>
+      <div
+        className={`${mStyle.sectionBox} ${isPlaying ? mStyle.active : ""}`}
+        style={{ position: "relative" }}>
+        <div className={mStyle.visualBox}>
+          {!showVideo && <img src={main.main_img} alt="poster" />}
+          {showVideo && (
+            <>
+              <video
+                ref={videoRef}
+                className={mStyle.video}
+                src="/videos/video-mSection.mp4"
+                onPlay={() => setIsPlaying(true)}
+                onEnded={() => {
+                  setIsPlaying(false);
+                  setShowVideo(false);
+                }}
+                muted
+                autoPlay
+                style={{ transition: "0.1s" }}
+              />
+              {!isPlaying && <div className={mStyle.pauseOverlay}></div>}
+            </>
+          )}
+          <span className={mStyle.visualBoxOverlay}></span>
+        </div>
+
+        <div className={mStyle.textBox}>
+          <div className={`${isPlaying ? mStyle.hideText : mStyle.textT}`}>
+            <span className={mStyle.tTag}>
+              <img src="/images/badge/badge-wavve-original.svg" alt="W-original" />
+            </span>
+            <span className={mStyle.tTitle}>
+              <img src={main.main_Title} alt="title" />
+            </span>
+          </div>
+
+          <div className={`${isPlaying ? mStyle.hideText : mStyle.textM}`}>
+            <p className={mStyle.textMT}>
+              <span className={mStyle.ageBadge}>
+                <img src="images/badge/badge-19.svg" alt="" style={{ height: "30px" }} />
+              </span>
+              <span>액션</span>
+              <span>|</span>
+              <span>에피소드 8</span>
+            </p>
+            <p className={mStyle.textMB}>{main.main_desc}</p>
+          </div>
+
+          <div className={mStyle.btnBox}>
+            {isPlaying && (
+              <div className={mStyle.textT}>
+                <span className={mStyle.tTag}>
+                  <img src="/images/badge/badge-wavve-original.svg" alt="W-original" />
+                </span>
+                <span className={mStyle.tTitle}>
+                  <img src={main.main_Title} alt="title" />
+                </span>
+              </div>
+            )}
+
+            <div className={mStyle.btnBoxT}>
+              <span className={mStyle.playBtn} onClick={handleNavigate}></span>
+              <span
+                className={`${mStyle.heartBtn} ${isPicked ? mStyle.active : ""}`}
+                onClick={handleHeart}></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} size={modalSize}>
+        <div className="modal-header">
+          <h3 className="modal-title">알림</h3>
+          <button className="close-button" onClick={handleCloseModal}>
+            <span>닫기</span>
+          </button>
+        </div>
+
+        <div className="modal-content">
+          <p>
+            {pickAction === "add" ? "찜 리스트에 추가되었습니다!" : "찜 리스트에서 제거되었습니다!"}
+          </p>
+        </div>
+
+        <div className="modal-footer">
+          <button
+            className="btn default primary"
+            onClick={() => {
+              handleCloseModal();
+              navigate("/profile");
+            }}>
+            찜 바로가기
+          </button>
+          <button className="btn default secondary-line" onClick={handleCloseModal}>
+            닫기
+          </button>
+        </div>
+      </Modal>
+    </>
+  );
+};
+
+export default MainSlider;

@@ -1,0 +1,144 @@
+@use "../../App.scss" as g;
+
+.default-list {
+  overflow: hidden;
+  .swiper {
+    position: relative;
+    overflow: visible;
+    width: 100%;
+
+    .swiper-wrapper {
+      overflow: visible;
+
+      .swiper-slide {
+        position: relative;
+        overflow: visible;
+        width: 220px;
+        z-index: 1;
+
+        &:hover {
+          z-index: 50;
+        }
+
+        // 메인 카드
+        .poster-wrap {
+          position: relative;
+          width: 220px;
+          height: 320px;
+          border-radius: 12px;
+          overflow: visible;
+          z-index: 1;
+
+          .main {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: opacity 1s ease;
+          }
+
+          // 미리보기 카드
+          .preview-wrap {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 464px;
+            min-height: 464px;
+            opacity: 0;
+            pointer-events: auto;
+            z-index: 20;
+
+            @include g.myFlex($jc: unset, $gap: 1.4rem);
+            flex-direction: column;
+
+            padding: 0 30px;
+            background: black;
+            border: 1px solid #1d2131;
+            border-radius: 12px;
+            box-shadow: 0 0 40px 3px #0f1f42;
+
+            transition: opacity 0.4s ease, transform 0.4s ease;
+          }
+
+          // hover
+          &:hover {
+            z-index: 30;
+            .main {
+              opacity: 0;
+            }
+
+            .preview-wrap {
+              opacity: 1;
+              transform: translate(-50%, -50%);
+              transition-delay: 0.3s;
+            }
+          }
+        }
+      }
+
+      // 첫번째 미리보기 카드 위치 조정 (기존 유지)
+      .swiper-slide-active {
+        .poster-wrap {
+          .preview-wrap {
+            left: 0;
+            transform: translate(0, -50%);
+          }
+
+          &:hover .preview-wrap {
+            transform: translate(0, -50%);
+          }
+        }
+      }
+
+      // 화면상 마지막 카드 위치 조정 (기존 유지)
+      .swiper-slide-visible:not(.swiper-slide-fully-visible) {
+        .poster-wrap {
+          .preview-wrap {
+            left: auto;
+            right: 0;
+            transform: translate(0, -50%);
+          }
+
+          &:hover .preview-wrap {
+            right: 0;
+            transform: translate(0, -50%);
+          }
+        }
+      }
+
+      // 진짜 마지막 카드 (기존 유지)
+      .swiper-slide:last-child {
+        .poster-wrap {
+          .preview-wrap {
+            left: auto;
+            right: 0;
+            transform: translate(0, -50%);
+          }
+
+          &:hover .preview-wrap {
+            right: 0;
+            transform: translate(0, -50%);
+          }
+        }
+      }
+      .swiper-slide.only {
+        .poster-wrap {
+          .preview-wrap {
+            left: 0 !important;
+            right: auto !important;
+            transform: translate(0, -50%) !important;
+          }
+
+          &:hover .preview-wrap {
+            left: 0 !important;
+            right: auto !important;
+            transform: translate(0, -50%) !important;
+          }
+        }
+      }
+    }
+  }
+}
