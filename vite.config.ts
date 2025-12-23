@@ -22,7 +22,7 @@ export default defineConfig({
       registerType: "autoUpdate",
       manifest: {
         name: "My React App",
-        short_name: "Wavve app",
+        short_name: "Wavve-test",
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",
