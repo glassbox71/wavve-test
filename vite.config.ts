@@ -18,29 +18,31 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig({
   plugins: [
     react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      manifest: {
-        name: 'My React App',
-        short_name: "Wavve app",
-        start_url: '/',
-        display: 'standalone',
-        background_color: '#ffffff',
-        theme_color: '#000000',
-        icons: [
-          {
-            src: '/m-icon-192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: '/m-icon-512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable', // 
-          },
-        ],
+   VitePWA({
+  registerType: 'autoUpdate',
+  manifest: {
+    name: 'Wave-app',
+    short_name: 'Wave',
+    start_url: '/',
+    display: 'standalone',
+    background_color: '#ffffff',
+    theme_color: '#000000',
+    icons: [
+      {
+        src: '/m-icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'any maskable'
       },
-    }),
+      {
+        src: '/m-icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'any maskable'
+      }
+    ],
+  },
+});
+
   ],
 });
