@@ -21,8 +21,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'My React App',
-        short_name: 'ReactApp',
+        name: 'Wavve App',
+        short_name: 'Wavve-app',
         start_url: '/',
         display: 'standalone',
         background_color: '#ffffff',
