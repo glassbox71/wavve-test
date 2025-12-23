@@ -29,9 +29,9 @@ export default defineConfig({
         theme_color: "#000000",
         icons: [
           {
-            src: "/m-icon-192.png",
+            src: "/m-icon-192.svg",
             sizes: "192x192",
-            type: "image/png",
+            type: "image/svg+xml",
             purpose: "any maskable",
           },
           {
