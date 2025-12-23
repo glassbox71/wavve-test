@@ -21,8 +21,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Wavve App',
-        short_name: 'Wavve-app',
+        name: 'My React App',
+        short_name: "Wavve app",
         start_url: '/',
         display: 'standalone',
         background_color: '#ffffff',
@@ -37,6 +37,7 @@ export default defineConfig({
             src: '/m-icon-512.png',
             sizes: '512x512',
             type: 'image/png',
+            purpose: 'any maskable', // 
           },
         ],
       },
