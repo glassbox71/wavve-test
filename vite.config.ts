@@ -1,3 +1,4 @@
+//vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
@@ -8,6 +9,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
+        //사이트앱 이름
         name: "Wavve App",
         short_name: "Wavve",
         start_url: "/",
