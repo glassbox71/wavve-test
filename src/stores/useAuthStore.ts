@@ -8,6 +8,7 @@ import {
   browserSessionPersistence,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
 } from "firebase/auth";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -227,7 +228,8 @@ export const useAuthStore = create<AuthState>()(
         onGoogleLogin: async () => {
           try {
             const provider = new GoogleAuthProvider();
-            const result = await signInWithPopup(auth, provider);
+            // const result = await signInWithPopup(auth, provider);
+            const result = await signInWithRedirect(auth, provider);
             set({ user: result.user });
             alert("구글 로그인 성공");
             return true;
