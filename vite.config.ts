@@ -12,7 +12,8 @@ export default defineConfig({
         short_name: "Wavve-test",
         start_url: "/",
         display: "standalone",
-        background_color: "#ffff00",
+        // 화면이 열릴때 보이는 배경
+        background_color: "#ffffff",
         theme_color: "#000000",
         icons: [
           {
