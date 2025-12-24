@@ -1,5 +1,5 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Suspense, lazy, use, useEffect, useState } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
 import './style/common-button.scss';
 // 1. 공통 컴포넌트 및 로딩바
@@ -14,6 +14,8 @@ import SearchOverlay from './components/SearchOverlay';
 import { useAuthStore } from './stores/useAuthStore';
 import { usePickStore } from './stores/usePickStore';
 import BottomMenu from './components/BottomMenu';
+import { getRedirectResult } from 'firebase/auth';
+import { auth } from './firebase/firebase';
 
 // 3. 페이지 컴포넌트 Lazy Loading (첫 진입 속도 4초 이하 달성의 핵심)
 const Intro = lazy(() => import('./pages/Intro'));
@@ -55,6 +57,7 @@ const NoticeAdetail = lazy(() => import('./pages/NoticeAdetail'));
 function App() {
     const location = useLocation();
     const currentPath = location.pathname.toLowerCase();
+    const navigate = useNavigate();
 
     const user = useAuthStore((state) => state.user);
     const selectedCharId = useAuthStore((state) => state.selectedCharId);
@@ -66,12 +69,30 @@ function App() {
         }
     }, [user, selectedCharId, onFetchPick]);
 
+    const setUser = useAuthStore((state) => state.setUser);
+
+
     // [레이아웃 제어] 인트로, 로그인, 회원가입, 캐릭터 선택 페이지에서는 헤더/푸터를 숨김
     const hideLayoutPaths = ['/', '/login', '/signup', '/choice-char'];
     const isHideLayout = hideLayoutPaths.includes(currentPath);
 
     const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+    useEffect(() => {
+        getRedirectResult(auth)
+            .then((result) => {
+                if (result?.user) {
+                    setUser(result.user);
+                    console.log("구글 로그인 성공", result.user);
+                    navigate("/choice-char"); //  여기서 이동
+                }
+            })
+            .catch((err) => {
+                console.error("구글 리다이렉트 로그인 실패", err);
+            });
+    }, []);
+
 
     return (
         // Suspense를 최상단에 배치하여 Lazy 로딩되는 모든 페이지에 로딩바 적용

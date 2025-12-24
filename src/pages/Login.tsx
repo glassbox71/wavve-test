@@ -105,10 +105,12 @@ const Login = () => {
   };
 
   const handleGoogle = async () => {
-    const success = await onGoogleLogin();
-    if (success) {
-      navigate("/choice-char");
-    }
+    await onGoogleLogin();
+    // const success = await onGoogleLogin();
+    // console.log("구글", success)
+    // if (success) {
+    //   navigate("/choice-char");
+    // }
   };
 
   const handleKakao = async () => {

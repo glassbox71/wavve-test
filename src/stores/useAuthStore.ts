@@ -225,19 +225,25 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
+        // onGoogleLogin: async () => {
+        //   console.log("sdfsdf")
+        //   try {
+        //     const provider = new GoogleAuthProvider();
+        //     // const result = await signInWithPopup(auth, provider);
+        //    await signInWithRedirect(auth, provider);
+
+        //     // set({ user: result.user });
+        //     alert("구글 로그인 성공");
+        //     return true;
+        //   } catch (err) {
+        //     alert("구글 로그인 실패");
+        //     console.error("구글 로그인 실패", err);
+        //     return false;
+        //   }
+        // },
         onGoogleLogin: async () => {
-          try {
-            const provider = new GoogleAuthProvider();
-            // const result = await signInWithPopup(auth, provider);
-            const result = await signInWithRedirect(auth, provider);
-            set({ user: result.user });
-            alert("구글 로그인 성공");
-            return true;
-          } catch (err) {
-            alert("구글 로그인 실패");
-            console.error("구글 로그인 실패", err);
-            return false;
-          }
+          const provider = new GoogleAuthProvider();
+          await signInWithRedirect(auth, provider);
         },
 
         onLogout: async () => {
