@@ -1,16 +1,3 @@
-// import { defineConfig } from 'vite'
-// import react from '@vitejs/plugin-react'
-
-// // https://vite.dev/config/
-// export default defineConfig({
-//   plugins: [
-//     react({
-//       babel: {
-//         plugins: [['babel-plugin-react-compiler']],
-//       },
-//     }),
-//   ],
-// })
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
@@ -25,7 +12,7 @@ export default defineConfig({
         short_name: "Wavve-test",
         start_url: "/",
         display: "standalone",
-        background_color: "#ffffff",
+        background_color: "#ffff00",
         theme_color: "#000000",
         icons: [
           {
