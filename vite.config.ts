@@ -8,8 +8,8 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        name: "My React App",
-        short_name: "Wavve-test",
+        name: "Wavve App",
+        short_name: "Wavve",
         start_url: "/",
         display: "standalone",
         // 화면이 열릴때 보이는 배경
@@ -17,9 +17,12 @@ export default defineConfig({
         theme_color: "#000000",
         icons: [
           {
-            src: "/Wavve_192x192.svg",
+            // src: "/Wavve_192x192.svg",
+            // sizes: "192x192",
+            // type: "image/svg+xml",
+            src: "/Wavve_192x192.png",
             sizes: "192x192",
-            type: "image/svg+xml",
+            type: "image/png",
             purpose: "any maskable",
           },
           {
