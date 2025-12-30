@@ -35,7 +35,19 @@ const WavveList = ({ title, wavves }: WavveListProps) => {
 
     const navigate = useNavigate();
 
-    const getUid = (item: any) => Number(item.tmdb_id ?? item.contentId ?? item.id);
+    const getUid = (item: OnlyWavve | Pick) => {
+        // 1. tmdb_id 확인
+        if (item.tmdb_id) return Number(item.tmdb_id);
+
+        // 2. contentId 확인 (any 대신 '속성 체크' 방식 사용)
+        // item 객체 안에 contentId가 있는지 확인하고 있으면 그 값을 사용합니다.
+        if ('contentId' in item && item.contentId) {
+            return Number(item.contentId);
+        }
+
+        // 3. 기본 id 확인
+        return Number(item.id);
+    };
 
     const handleSwiperBtns = (swiper: SwiperClass) => {
         const isFirst = swiper.activeIndex === 0;
@@ -62,20 +74,30 @@ const WavveList = ({ title, wavves }: WavveListProps) => {
 
     const handleCloseModal = () => setIsModalOpen(false);
 
-    const handleHeart = async (item: OnlyWavve) => {
+    const handleHeart = async (e: React.MouseEvent, item: OnlyWavve) => {
+        e.stopPropagation(); // 부모의 onClick 방지
         await onTogglePick(item as Pick);
         setModalSize('small');
         setIsModalOpen(true);
     };
 
     // ========== 재생 함수 ==========
-    const handlePlayClick = (item: OnlyWavve) => {
+    const handlePlayClick = (e: React.MouseEvent, item: OnlyWavve) => {
+        e.stopPropagation(); // 부모의 onClick(상세페이지 이동)이 실행되지 않게 막음
         const videoKey = item.wavveVideo?.key || item.videos?.[0]?.key;
         if (!videoKey) return;
 
         navigate(`/player/${videoKey}`);
     };
 
+    // ===================================================
+
+    // ========== 모바일을 위한 클릭 버튼 ==========
+    const handleOpenDetailPage = (id: number) => {
+        if (window.innerWidth <= 1200) {
+            navigate(`/contentsdetail/wavve/${id}`);
+        }
+    };
     // ===================================================
 
     return (
@@ -106,6 +128,7 @@ const WavveList = ({ title, wavves }: WavveListProps) => {
                                 className="poster-wrap badge-wavve"
                                 onMouseEnter={() => setHoverId(m.id)}
                                 onMouseLeave={() => setHoverId(null)}
+                                onClick={() => handleOpenDetailPage(m.id)}
                             >
                                 <img
                                     className="main"
@@ -179,13 +202,13 @@ const WavveList = ({ title, wavves }: WavveListProps) => {
                                             <div className="preview-btn-wrap">
                                                 <button
                                                     className="preview-play-btn"
-                                                    onClick={() => handlePlayClick(m)}
+                                                    onClick={(e) => handlePlayClick(e, m)}
                                                 />
                                                 <button
                                                     className={`preview-heart-btn ${
                                                         isPicked ? 'active' : ''
                                                     }`}
-                                                    onClick={() => handleHeart(m)}
+                                                    onClick={(e) => handleHeart(e, m)}
                                                 />
                                             </div>
                                             <Link to={`/contentsdetail/wavve/${m.id}`} />

@@ -65,7 +65,8 @@ const PrimaryList = ({ title, randomList }: PrimaryListProps) => {
 
     const handleCloseModal = () => setIsModalOpen(false);
 
-    const handleHeart = async (item: PrimaryItem) => {
+    const handleHeart = async (e: React.MouseEvent, item: PrimaryItem) => {
+        e.stopPropagation(); // 부모의 onClick 방지
         const pickItem: Pick = {
             id: item.id,
             tmdb_id: item.id,
@@ -81,6 +82,23 @@ const PrimaryList = ({ title, randomList }: PrimaryListProps) => {
         setModalSize('small');
         setIsModalOpen(true);
     };
+
+    // ========== 재생 함수 ==========
+    const handlePlayClick = (e: React.MouseEvent, m: PrimaryItem) => {
+        e.stopPropagation(); // 부모의 onClick 방지
+        if (!m.videos?.length) return;
+        navigate(`/player/${m.videos?.[0]?.key}`);
+    };
+    // ===================================================
+
+    // ========== 모바일을 위한 클릭 버튼 ==========
+    const handleOpenDetailPage = (id: number) => {
+        if (window.innerWidth <= 1200) {
+            navigate(`/contentsdetail/tv/${id}`);
+        }
+    };
+    // ===================================================
+
     return (
         <section className="card-list">
             <div className="title-wrap">
@@ -106,6 +124,7 @@ const PrimaryList = ({ title, randomList }: PrimaryListProps) => {
                             className="poster-wrap badge-wavve"
                             onMouseEnter={() => setHoverId(m.id)}
                             onMouseLeave={() => setHoverId(null)}
+                            onClick={() => handleOpenDetailPage(m.id)}
                         >
                             <img
                                 className="main"
@@ -174,7 +193,10 @@ const PrimaryList = ({ title, randomList }: PrimaryListProps) => {
                                     </div>
                                     <div className="preview-badge-bottom">
                                         <div className="preview-btn-wrap">
-                                            <button className="preview-play-btn"></button>
+                                            <button
+                                                className="preview-play-btn"
+                                                onClick={(e) => handlePlayClick(e, m)}
+                                            ></button>
                                             <button
                                                 className={`preview-heart-btn ${
                                                     pickList.some(
@@ -183,7 +205,7 @@ const PrimaryList = ({ title, randomList }: PrimaryListProps) => {
                                                         ? 'active'
                                                         : ''
                                                 }`}
-                                                onClick={() => handleHeart(m)}
+                                                onClick={(e) => handleHeart(e, m)}
                                             ></button>
                                         </div>
                                         <Link to={`/contentsdetail/tv/${m.id}`}></Link>

@@ -8,7 +8,6 @@ import {
   browserSessionPersistence,
   GoogleAuthProvider,
   signInWithPopup,
-  signInWithRedirect,
 } from "firebase/auth";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -30,6 +29,13 @@ export interface WatchHistoryItem {
   updatedAt: Timestamp;
   episodeNumber?: number;
 }
+
+export interface TicketInfo {
+  title: string;
+  period: string;
+  price: number;
+}
+
 // ----------------------------------------------------
 // 카카오 타입 선언
 // ----------------------------------------------------
@@ -46,15 +52,15 @@ declare global {
       Auth: {
         login: (params: {
           scope: string;
-          success: (authObj: KakaoAuthResponse) => void; // any -> KakaoAuthResponse
-          fail: (error: Error) => void; // any -> Error
+          success: (authObj: KakaoAuthResponse) => void;
+          fail: (error: Error) => void;
         }) => void;
       };
       API: {
         request: (params: {
           url: string;
-          success?: (response: KakaoUserResponse) => void; // any -> KakaoUserResponse
-          fail?: (error: Error) => void; // any -> Error
+          success?: (response: KakaoUserResponse) => void;
+          fail?: (error: Error) => void;
         }) => void;
       };
     };
@@ -80,8 +86,8 @@ interface AuthState {
   isInitializing: boolean;
   selectedCharId: number | null;
   selectedCharNickname: string | null;
-
-  // [any 제거] 구체적인 타입 적용
+  myTicket: TicketInfo | null;
+  setMyTicket: (ticket: TicketInfo) => void;
   watchHistoryCache: WatchHistoryItem[];
   setWatchHistoryCache: (history: WatchHistoryItem[]) => void;
 
@@ -100,12 +106,12 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => {
-      // 초기 상태값 설정 (watchHistoryCache 추가)
       const initialState = {
         user: null,
         isInitializing: true,
         selectedCharId: null,
         selectedCharNickname: null,
+        myTicket: null,
         watchHistoryCache: [],
       };
 
@@ -113,15 +119,20 @@ export const useAuthStore = create<AuthState>()(
         console.error("Firebase Persistence 설정 실패:", error);
       });
 
-      onAuthStateChanged(auth, (user) => {
-        set({ user: user, isInitializing: false });
+      onAuthStateChanged(auth, (firebaseUser) => {
+        if (firebaseUser) {
+          set({ user: firebaseUser, isInitializing: false });
+        } else {
+          set({ isInitializing: false });
+        }
       });
 
       return {
         ...initialState,
 
-        // 1. [구현 추가] 실제 데이터를 상태에 저장하는 함수
         setWatchHistoryCache: (history) => set({ watchHistoryCache: history }),
+
+        setMyTicket: (ticket) => set({ myTicket: ticket }),
 
         updateNickname: async (nickname: string) => {
           const { user, selectedCharId } = get();
@@ -136,7 +147,6 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // [수정] 캐릭터 선택 시 다른 프로필의 데이터가 보이지 않도록 캐시 초기화
         selectChar: (id, nickname) =>
           set({
             selectedCharId: id,
@@ -165,7 +175,7 @@ export const useAuthStore = create<AuthState>()(
         onKakaoLogin: async (navigate) => {
           try {
             if (!window.Kakao.isInitialized()) {
-              window.Kakao.init("415096494840a6ca548a1d48257b2766");
+              window.Kakao.init("f42c7217dba2db4b19dd471308a132fa");
             }
 
             await new Promise<KakaoAuthResponse>((resolve, reject) => {
@@ -176,19 +186,22 @@ export const useAuthStore = create<AuthState>()(
               });
             });
 
-            const res = await new Promise<KakaoUserResponse>((resolve, reject) => {
-              window.Kakao.API.request({
-                url: "/v2/user/me",
-                success: resolve,
-                fail: reject,
-              });
-            });
+            const res = await new Promise<KakaoUserResponse>(
+              (resolve, reject) => {
+                window.Kakao.API.request({
+                  url: "/v2/user/me",
+                  success: resolve,
+                  fail: reject,
+                });
+              }
+            );
 
             const uid = res.id.toString();
             const kakaoUser = {
               uid,
               email: res.kakao_account?.email || "",
-              displayName: res.kakao_account?.profile?.nickname || "카카오사용자",
+              displayName:
+                res.kakao_account?.profile?.nickname || "카카오사용자",
               nickname: res.kakao_account?.profile?.nickname || "카카오사용자",
               photoURL: res.kakao_account?.profile?.profile_image_url || "",
               provider: "kakao",
@@ -221,34 +234,31 @@ export const useAuthStore = create<AuthState>()(
           } catch (err) {
             const error = err as Error;
             console.error("카카오 로그인 중 오류:", error);
-            alert("카카오 로그인 실패: " + (error.message || "알 수 없는 오류"));
+            alert(
+              "카카오 로그인 실패: " + (error.message || "알 수 없는 오류")
+            );
           }
         },
 
-        // onGoogleLogin: async () => {
-        //   console.log("sdfsdf")
-        //   try {
-        //     const provider = new GoogleAuthProvider();
-        //     // const result = await signInWithPopup(auth, provider);
-        //    await signInWithRedirect(auth, provider);
-
-        //     // set({ user: result.user });
-        //     alert("구글 로그인 성공");
-        //     return true;
-        //   } catch (err) {
-        //     alert("구글 로그인 실패");
-        //     console.error("구글 로그인 실패", err);
-        //     return false;
-        //   }
-        // },
         onGoogleLogin: async () => {
-          const provider = new GoogleAuthProvider();
-          await signInWithRedirect(auth, provider);
+          try {
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
+            set({ user: result.user });
+            alert("구글 로그인 성공");
+            return true;
+          } catch (err) {
+            alert("구글 로그인 실패");
+            console.error("구글 로그인 실패", err);
+            return false;
+          }
         },
 
         onLogout: async () => {
           try {
             await signOut(auth);
+            // ★ 수정됨: myTicket을 null로 설정하지 않음!
+            // 유저 정보와 프로필 정보만 초기화합니다.
             set({
               user: null,
               selectedCharId: null,
@@ -264,8 +274,10 @@ export const useAuthStore = create<AuthState>()(
     {
       name: "auth-storage",
       partialize: (state) => ({
+        user: state.user,
         selectedCharId: state.selectedCharId,
         selectedCharNickname: state.selectedCharNickname,
+        myTicket: state.myTicket,
       }),
     }
   )
