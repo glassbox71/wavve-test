@@ -1,9 +1,10 @@
 interface EtcLoginProps {
   handleGoogle: () => void; // Google 로그인 처리를 위한 함수
   handleKakao: () => void; // Kakao 로그인 처리를 위한 함수
+  googlePending?: boolean;
 }
 // EtcLogin 컴포넌트 정의 수정
-const EtcLogin = ({ handleGoogle, handleKakao }: EtcLoginProps) => {
+const EtcLogin = ({ handleGoogle, handleKakao, googlePending = false }: EtcLoginProps) => {
   return (
     <div className="btn-box-other">
       <p className="text-top">또는 다른 서비스 계정으로 로그인</p>
@@ -14,7 +15,7 @@ const EtcLogin = ({ handleGoogle, handleKakao }: EtcLoginProps) => {
           </button>
         </li>
         <li>
-          <button onClick={handleGoogle}>
+          <button type="button" onClick={handleGoogle} disabled={googlePending} aria-busy={googlePending} aria-label={googlePending ? 'Google 로그인 중' : 'Google 로그인'}>
             <img src="/images/icons/icon-google-login.svg" alt="google login" />
           </button>
         </li>

@@ -123,7 +123,7 @@ export const useAuthStore = create<AuthState>()(
         if (firebaseUser) {
           set({ user: firebaseUser, isInitializing: false });
         } else {
-          set({ isInitializing: false });
+          set({ user: null, selectedCharId: null, selectedCharNickname: null, isInitializing: false });
         }
       });
 
@@ -241,17 +241,10 @@ export const useAuthStore = create<AuthState>()(
         },
 
         onGoogleLogin: async () => {
-          try {
-            const provider = new GoogleAuthProvider();
-            const result = await signInWithPopup(auth, provider);
-            set({ user: result.user });
-            alert("구글 로그인 성공");
-            return true;
-          } catch (err) {
-            alert("구글 로그인 실패");
-            console.error("구글 로그인 실패", err);
-            return false;
-          }
+          const provider = new GoogleAuthProvider();
+          const result = await signInWithPopup(auth, provider);
+          set({ user: result.user });
+          return true;
         },
 
         onLogout: async () => {
@@ -272,7 +265,7 @@ export const useAuthStore = create<AuthState>()(
       };
     },
     {
-      name: "auth-storage",
+      name: `auth-storage:${import.meta.env.VITE_FIREBASE_PROJECT_ID}`,
       partialize: (state) => ({
         user: state.user,
         selectedCharId: state.selectedCharId,

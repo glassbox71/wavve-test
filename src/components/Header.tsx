@@ -17,6 +17,7 @@ const mainMenu: MenuItem[] = [
     { id: 4, title: '해외 시리즈', path: '/overseasSeries' },
     { id: 5, title: '애니메이션', path: '/animation' },
     { id: 6, title: '키즈', path: '/kids' },
+    { id: 11, title: '스포츠', path: '/sports' },
     // { id: 7, title: "COMMON", path: "/Common" },
 ];
 

@@ -16,6 +16,7 @@ import { usePickStore } from "./stores/usePickStore";
 import BottomMenu from "./components/BottomMenu";
 
 // 3. 페이지 컴포넌트 Lazy Loading
+const Sports = lazy(() => import("./pages/Sports"));
 const Intro = lazy(() => import("./pages/Intro"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -105,6 +106,7 @@ function App() {
         <Route path="/" element={<Intro />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/sports" element={<Sports />} />
 
         {/* 로그인한 사용자만 접근 가능한 보호된 경로 */}
         <Route element={<ProtectedRoute />}>

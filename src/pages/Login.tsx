@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useState, useMemo } from "react";
 import EtcLogin from "../components/EtcLogin";
+import { googleLoginErrorMessage } from "../utils/authErrors";
 
 // 이메일 형식 검사를 위한 정규 표현식
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -11,6 +12,8 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const Login = () => {
   const { onLogin, onGoogleLogin, onKakaoLogin } = useAuthStore();
   const navigate = useNavigate();
+  const [googlePending, setGooglePending] = useState(false);
+  const [googleError, setGoogleError] = useState('');
 
   const [email, setEmail] = useState(
     () => localStorage.getItem("savedEmail") || ""
@@ -105,9 +108,16 @@ const Login = () => {
   };
 
   const handleGoogle = async () => {
-    const success = await onGoogleLogin();
-    if (success) {
-      navigate("/choice-char");
+    if (googlePending) return;
+    setGooglePending(true);
+    setGoogleError('');
+    try {
+      const success = await onGoogleLogin();
+      if (success) navigate("/choice-char");
+    } catch (error) {
+      setGoogleError(googleLoginErrorMessage(error, window.location.hostname));
+    } finally {
+      setGooglePending(false);
     }
   };
 
@@ -192,7 +202,8 @@ const Login = () => {
           </ul>
         </div>
 
-        <EtcLogin handleGoogle={handleGoogle} handleKakao={handleKakao} />
+        {googleError && <p role="alert" className="google-login-error">{googleError}</p>}
+        <EtcLogin handleGoogle={handleGoogle} handleKakao={handleKakao} googlePending={googlePending} />
       </div>
     </main>
   );

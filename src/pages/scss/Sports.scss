@@ -1,0 +1,59 @@
+.sports-page {
+  max-width: 1560px; margin: 0 auto; padding: 140px 40px 80px; color: #f5f6fa;
+  button, a { -webkit-tap-highlight-color: transparent; }
+  button { cursor: pointer; color: inherit; font: inherit; }
+  button:disabled { cursor: default; opacity: .5; }
+  button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 3px solid #75a7ff; outline-offset: 4px; }
+  .sports-intro { padding: 32px; border: 1px solid #283449; border-radius: 24px; background: radial-gradient(ellipse at top right, #12385d, #111722 70%); margin-bottom: 32px; }
+  .sports-eyebrow { color: #79b7ff; font-size: 12px; letter-spacing: 3px; }
+  h1 { font-size: clamp(28px, 4vw, 48px); font-weight: 800; margin: 16px 0; }
+  h2 { font-size: 22px; line-height: 1.5; }
+  p { line-height: 1.7; }
+  .sports-muted, .sports-footnote { color: #a6b0c3; font-size: 13px; }
+  a { color: #8eb8ff; }
+  .sports-refresh { display: flex; align-items: center; gap: 16px; margin-top: 24px; font-size: 12px; color: #b5c1d6; }
+  .sports-refresh button { border: 1px solid #52627e; border-radius: 8px; padding: 8px 14px; background: #17243b; }
+  .sports-watch { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: stretch; }
+  .sports-video { aspect-ratio: 16 / 9; background: #000; overflow: hidden; border-radius: 16px; }
+  iframe { width: 100%; height: 100%; border: 0; }
+  .sports-now { display: flex; align-items: center; gap: 12px; margin: 20px 0 10px; font-size: 13px; color: #b5c1d6; }
+  .sports-live { display: inline-block; background: #e02e4b; color: #fff; border-radius: 4px; padding: 4px 7px; font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+  .sports-player h2 { margin-bottom: 12px; }
+  .sports-chat { display: flex; flex-direction: column; min-height: 420px; max-height: 650px; background: #171d2a; border: 1px solid #2b3446; border-radius: 16px; padding: 20px; }
+  .sports-chat-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .sports-chat-heading h2 { font-size: 18px; }
+  .sports-chat-heading span { color: #90b9ff; font-size: 11px; }
+  .sports-chat-login { margin: auto; text-align: center; }
+  .sports-chat-login a { display: block; margin-top: 18px; }
+  .sports-messages { flex: 1; min-height: 180px; overflow-y: auto; overscroll-behavior: contain; margin: 16px 0; }
+  .sports-message { background: #222b3b; border-radius: 10px; padding: 10px; margin: 8px 0; overflow-wrap: anywhere; }
+  .sports-message.mine { background: #16356b; }
+  .sports-message > div { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; }
+  .sports-message time { font-size: 10px; color: #a9b5c9; }
+  .sports-message p { font-size: 14px; margin-top: 5px; white-space: pre-wrap; }
+  .sports-chat-form label { display: block; font-size: 12px; margin-bottom: 8px; }
+  textarea { box-sizing: border-box; width: 100%; resize: vertical; min-height: 64px; max-height: 120px; border: 1px solid #4b5871; background: #0e1420; color: #fff; border-radius: 8px; padding: 10px; font: inherit; font-size: 13px; }
+  .sports-chat-form > div { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .sports-chat-form span { font-size: 11px; color: #a6b0c3; }
+  .sports-chat-form button { border: 0; border-radius: 8px; background: #0050ff; padding: 8px 18px; }
+  .sports-error { border: 1px solid #8c4559; border-radius: 10px; padding: 14px; margin: 16px 0; background: #321d2a; color: #ffd0d9; font-size: 14px; }
+  .sports-empty { text-align: center; padding: 64px 20px; background: #151b27; border-radius: 16px; }
+  .sports-ranking, .sports-all { margin-top: 48px; }
+  .sports-section-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+  .sports-section-heading > span { color: #a6b0c3; font-size: 12px; }
+  .sports-rank-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+  .sports-card { text-align: left; background: #171d2a; padding: 0 0 16px; border: 2px solid transparent; border-radius: 12px; overflow: hidden; min-width: 0; }
+  .sports-card:hover, .sports-card.selected { border-color: #4b8dff; }
+  .sports-thumbnail { position: relative; aspect-ratio: 16/9; background: #252f43; }
+  .sports-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+  .sports-thumbnail .sports-live { position: absolute; right: 8px; top: 8px; }
+  .sports-rank-number { position: absolute; bottom: 4px; left: 10px; font-size: 42px; font-weight: 900; color: white; text-shadow: 0 2px 8px #000; }
+  .sports-card > strong { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin: 12px; font-size: 14px; line-height: 1.5; }
+  .sports-card > span, .sports-card > small { display: block; margin: 6px 12px; color: #a6b0c3; font-size: 12px; }
+  .sports-all-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+  .sports-all-grid button { background: #171d2a; border: 1px solid #35415a; border-radius: 10px; padding: 16px; text-align: left; }
+  .sports-all-grid small { display: block; margin-top: 10px; color: #a6b0c3; }
+  .sports-footnote { margin-top: 40px; }
+  @media (max-width: 1100px) { .sports-watch { grid-template-columns: 1fr; } .sports-chat { height: 440px; } .sports-rank-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 600px) { padding: 110px 16px 70px; .sports-intro { padding: 24px 18px; } .sports-rank-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sports-all-grid { grid-template-columns: 1fr; } .sports-refresh { flex-wrap: wrap; } }
+}
